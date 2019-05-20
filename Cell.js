@@ -30,7 +30,7 @@ Cell.prototype.show = function() {
             fill(0);
             rect(this.x,this.y,this.w,this.w);
             if (this.neighborCount > 0){
-                textAlign(CENTER);
+                textAlign(CENTER, CENTER);
                 fill(150);
                 text(this.neighborCount, this.x + this.w*0.5, this.y + this.w*0.5);
             }

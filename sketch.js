@@ -154,17 +154,17 @@ function mousePressed() {
 
 
 function draw() {
-    if (win == false){
+    if (!win){
         background(200);
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 grid[i][j].show();
             }
         }
-    }else if(win == true){
+    }else {
         console.log("reached if win state")
         background(0,128,0);
         textSize(50);
-        text("Congratulations Thot",(w * xLevel + 1)/2, (w * xLevel + 1)/2);
+        text("Congratulations Nerd",(w * xLevel + 1)/2, (w * xLevel + 1)/2);
     }
 }
