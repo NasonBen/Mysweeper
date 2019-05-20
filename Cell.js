@@ -22,7 +22,6 @@ Cell.prototype.show = function() {
         return;
     }
     if (this.revealed){
-
         if (this.bee && this.flagged == false){
             fill(127);
             ellipse(this.x + this.w*0.5, this.y + this.w*0.5, this.w *0.5);
@@ -33,7 +32,7 @@ Cell.prototype.show = function() {
             if (this.neighborCount > 0){
                 textAlign(CENTER);
                 fill(150);
-                text(this.neighborCount, this.x + this.w*0.5, this.y + this.w - 6 );
+                text(this.neighborCount, this.x + this.w*0.5, this.y + this.w*0.5);
             }
         }  
     }
@@ -72,8 +71,6 @@ Cell.prototype.reveal = function(){
         this.floodFill();
     }
 }
-
-
 
 Cell.prototype.floodFill = function(){
     for (var xoff = -1; xoff <= 1; xoff ++){
