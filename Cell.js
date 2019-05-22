@@ -8,7 +8,7 @@ function Cell(i , j , w) {
     this.neighborCount = 0;
     this.flagged = false;
 
-   this.bee = false
+   this.bee = false;
    this.revealed = false;
 }
 

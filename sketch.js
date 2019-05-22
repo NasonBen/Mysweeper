@@ -1,5 +1,4 @@
 function make2DArray(cols,rows) {
-    console.log("2D arr reached")
     textSize(30);
     var arr = new Array(cols);
     for (var i = 0; i < arr.length; i++) {
@@ -8,55 +7,43 @@ function make2DArray(cols,rows) {
     
     return arr;
 }
-var levelArr = [40] // this will be used to control the size of each square to get ruffly the same size for all the grid
+var levelArr = [40]; 
 var grid;
 var cols;
 var rows;
-var w = 80; // width of each square
+var w = 80; 
 var button = this.button
-var xLevel = 5; // i will use this to times the w to get the width of the grid
+var xLevel = 5; 
 var win = false;
 var dug = 0;
-
+var levelOn = 1;
 var totalBees = 7;
+var bombRem = 0;
+
 
 function setup() {
-    console.log("setUp func reached")
+    num = 5;
+    beeNum = 15;
     if (xLevel <= 5){
         w = 130;
         totalBees = 3;
-    }else if (xLevel >= 6 && xLevel <= 10) {
-        w = 80;
-        totalBees = 15;
+        bombRem = totalBees;
+    }else if (xLevel >= num + 1 && xLevel <= num + 10) {
+        w -= 5;
+        totalBees = float(beeNum + beeNum* 0.5);
+        bombRem = totalBees;
+    }else{
+        
+        xLevel = 5;
+        w = 130;
+        totalBees = 3;
+        bombRem = totalBees;
 
-    }else if (xLevel >= 11 && xLevel <= 20) {
-        totalBees = 25;
-        w = 60;
-    }else if (xLevel >= 21 && xLevel <= 30) {
-        totalBees = 75;
-        w = 40;
-    }else if (xLevel >= 31 && xLevel <= 40) {
-        totalBees = 120;
-        w = 40;
-    }else if (xLevel >= 41 && xLevel <= 50) {
-        totalBees = 200;
-        w = 30;
-    }else if (xLevel >= 51 && xLevel <= 60) {
-        totalBees = 360;
-        w = 25;
-    }else if (xLevel >= 61 && xLevel <= 70) {
-        totalBees = 550;
-        w = 25;
-    }else if (xLevel >= 71 && xLevel <= 80) {
-        totalBees = 750;
-        w = 25;
-    }else if (xLevel >= 61 && xLevel <= 70) {
-        totalBees = 550;
-        w = 20;
     }
     createCanvas(w * xLevel + 1, w * xLevel + 1);
     cols = floor(width / w);
     rows = floor(height / w);
+    document.getElementById("bomb").innerHTML = 'Flags:' + Math.round(bombRem);
 
     grid = make2DArray(cols, rows);
     for (var i = 0; i < cols; i++) {
@@ -65,7 +52,6 @@ function setup() {
         }
     }
 
-    // pick total bees spots
     var options = [];
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
@@ -78,7 +64,7 @@ function setup() {
         var choice = options[index];
         var i = choice[0];
         var j = choice[1];
-        // deletes that spot so no longer an option 
+
         options.splice(index, 1);
         grid[i][j].bee = true;
     }
@@ -93,13 +79,13 @@ function keyPressed() {
     if (keyCode === ENTER) {
         if (dug == xLevel * xLevel){
             win = true;
-            // alert("Next LEVEL");
             xLevel += 5;
             dug = 0;
             setup();
             draw();
             win = false;
             textSize(30);
+            levelOn +=1;
         }  
     } 
   }
@@ -108,10 +94,11 @@ function winFunction () {
     dug = 0;
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
-            if ( grid[i][j].flagged  || grid[i][j].revealed){ // && !(grid[i][j].bee.revealed)
+            if ((grid[i][j].bee && grid[i][j].flagged)  || grid[i][j].revealed){
                 dug += 1;
-                console.log(dug)
-            }
+                console.log(dug) 
+                console.log(xLevel * xLevel)
+            } 
             if (dug == xLevel * xLevel){
                 win = true;
             }                          
@@ -120,7 +107,6 @@ function winFunction () {
 }
 
 function gameOver() {
-    console.log("lose func reached")
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
             grid[i][j].revealed = true;
@@ -130,23 +116,32 @@ function gameOver() {
 
 function mousePressed() {
     if (!keyIsDown(70)) {
+        dug = 0;
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 if (grid[i][j].contains(mouseX, mouseY) && !grid[i][j].revealed && !grid[i][j].flagged) {
                     grid[i][j].reveal();
+                    dug +=1;
                     winFunction();
                     if (grid[i][j].bee) {
                         gameOver();
-                    }
+                    } 
                 }
             }
         }
     } else {
+        bombRem = totalBees;
+        dug = 0;
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 if (grid[i][j].contains(mouseX, mouseY) && !grid[i][j].revealed) {
                     grid[i][j].flagged = !grid[i][j].flagged;
+                    dug -= 1;
                 }
+                if(grid[i][j].flagged){
+                    bombRem -= 1;
+                    document.getElementById("bomb").innerHTML = 'Flags:' + Math.round(bombRem);
+                }  
             }
         }
     }
@@ -162,9 +157,11 @@ function draw() {
             }
         }
     }else {
-        console.log("reached if win state")
         background(0,128,0);
         textSize(50);
         text("Congratulations Nerd",(w * xLevel + 1)/2, (w * xLevel + 1)/2);
+        document.getElementById("level").innerHTML = 'LEVEL ' + levelOn;
+        
+
     }
 }
