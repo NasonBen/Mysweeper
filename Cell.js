@@ -17,14 +17,15 @@ Cell.prototype.show = function() {
     noFill();
     rect(this.x,this.y,this.w,this.w);
     if (this.flagged) {
-        fill(255, 0, 0);
-        ellipse(this.x + this.w*0.5, this.y + this.w*0.5, this.w *0.5);
-        return;
+            fill(255, 0, 0);
+            ellipse(this.x + this.w*0.5, this.y + this.w*0.5, this.w *0.5);
+        return;     
     }
     if (this.revealed){
         if (this.bee && this.flagged == false){
-            fill(127);
-            ellipse(this.x + this.w*0.5, this.y + this.w*0.5, this.w *0.5);
+                fill(127);
+                ellipse(this.x + this.w*0.5, this.y + this.w*0.5, this.w *0.5);
+            
         } else{
             noFill();
             fill(0);

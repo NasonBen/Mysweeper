@@ -1,39 +1,40 @@
-function make2DArray(cols,rows) {
+function make2DArray(cols, rows) {
     textSize(30);
     var arr = new Array(cols);
     for (var i = 0; i < arr.length; i++) {
         arr[i] = new Array(rows)
     }
-    
+
     return arr;
 }
-var levelArr = [40]; 
+var levelArr = [40];
 var grid;
 var cols;
 var rows;
-var w = 80; 
+var w = 80;
 var button = this.button
-var xLevel = 5; 
+var xLevel = 5;
 var win = false;
 var dug = 0;
 var levelOn = 1;
 var totalBees = 7;
 var bombRem = 0;
+var game = false;
 
 
 function setup() {
     num = 5;
     beeNum = 15;
-    if (xLevel <= 5){
+    if (xLevel <= 5) {
         w = 130;
         totalBees = 3;
         bombRem = totalBees;
-    }else if (xLevel >= num + 1 && xLevel <= num + 10) {
+    } else if (xLevel >= num + 1 && xLevel <= num + 10) {
         w -= 5;
-        totalBees = float(beeNum + beeNum* 0.5);
+        totalBees = float(beeNum + beeNum * 0.35);
         bombRem = totalBees;
-    }else{
-        
+    } else {
+
         xLevel = 5;
         w = 130;
         totalBees = 3;
@@ -77,31 +78,31 @@ function setup() {
 
 function keyPressed() {
     if (keyCode === ENTER) {
-        if (dug == xLevel * xLevel){
-            win = true;
+        if (win) {
+            win = false;
             xLevel += 5;
             dug = 0;
             setup();
             draw();
             win = false;
             textSize(30);
-            levelOn +=1;
-        }  
-    } 
-  }
+            levelOn += 1;
+        }
+    }
+}
 
-function winFunction () {
+function winFunction() {
     dug = 0;
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
-            if ((grid[i][j].bee && grid[i][j].flagged)  || grid[i][j].revealed){
+            if ((grid[i][j].bee && grid[i][j].flagged) || grid[i][j].revealed) {
                 dug += 1;
-                console.log(dug) 
-                console.log(xLevel * xLevel)
-            } 
-            if (dug == xLevel * xLevel){
-                win = true;
-            }                          
+            }
+        }
+    }
+    if (dug == xLevel * xLevel) {
+        if (!game) {
+            win = true;
         }
     }
 }
@@ -110,6 +111,7 @@ function gameOver() {
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
             grid[i][j].revealed = true;
+
         }
     }
 }
@@ -121,47 +123,70 @@ function mousePressed() {
             for (var j = 0; j < rows; j++) {
                 if (grid[i][j].contains(mouseX, mouseY) && !grid[i][j].revealed && !grid[i][j].flagged) {
                     grid[i][j].reveal();
-                    dug +=1;
-                    winFunction();
                     if (grid[i][j].bee) {
+                        game = true;
                         gameOver();
-                    } 
+                    }
                 }
             }
         }
     } else {
-        bombRem = totalBees;
+        
         dug = 0;
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 if (grid[i][j].contains(mouseX, mouseY) && !grid[i][j].revealed) {
-                    grid[i][j].flagged = !grid[i][j].flagged;
-                    dug -= 1;
+                    if (!(bombRem <=0)){
+                        if (!grid[i][j].revealed) {
+
+                            grid[i][j].flagged = !grid[i][j].flagged;
+
+                            if (grid[i][j].flagged) {
+
+                                bombRem -= 1;
+                                print("=================")
+                                print("reached in")
+                                print("bomrem ==", bombRem)
+                                print("=================")
+                            } else {
+                                bombRem += 1;
+                            }
+                            document.getElementById("bomb").innerHTML = 'Flags:' + Math.round(bombRem);
+                        }
+                    }else{
+                        if (grid[i][j].flagged) {
+
+                            grid[i][j].flagged = !grid[i][j].flagged;
+                            bombRem += 1;
+
+                        }
+
+                    }
+
                 }
-                if(grid[i][j].flagged){
-                    bombRem -= 1;
-                    document.getElementById("bomb").innerHTML = 'Flags:' + Math.round(bombRem);
-                }  
             }
         }
     }
+
 }
 
-
 function draw() {
-    if (!win){
+    if (!win) {
+        winFunction();
         background(200);
         for (var i = 0; i < cols; i++) {
             for (var j = 0; j < rows; j++) {
                 grid[i][j].show();
             }
         }
-    }else {
-        background(0,128,0);
+    } else if (win) {
+        winFunction();
+        background(0, 128, 0);
         textSize(50);
-        text("Congratulations Nerd",(w * xLevel + 1)/2, (w * xLevel + 1)/2);
+        text("Congratulations Nerd", (w * xLevel + 1) / 2, (w * xLevel + 1) / 2);
         document.getElementById("level").innerHTML = 'LEVEL ' + levelOn;
-        
-
+    } else {
+        winFunction();
+        print("i have no idea how you got he but you better leave")
     }
 }
