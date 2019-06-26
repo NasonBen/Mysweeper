@@ -184,6 +184,9 @@ function draw() {
         background(0, 128, 0);
         textSize(50);
         text("Congratulations Nerd", (w * xLevel + 1) / 2, (w * xLevel + 1) / 2);
+        print("reached text enter")
+        textSize(25);
+        text("PRESS ENTER", (w * xLevel + 1) / 2, (w * xLevel + 1)/ 1.2);
         document.getElementById("level").innerHTML = 'LEVEL ' + levelOn;
     } else {
         winFunction();
